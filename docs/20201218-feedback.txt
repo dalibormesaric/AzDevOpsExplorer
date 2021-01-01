@@ -1,0 +1,61 @@
+module Common.OSPlatformUtils
+
+open System.Runtime.InteropServices
+
+// getOperatingSystem is not a function here, it's actually a value, since it takes no arguments. This means it will get evaluated as soon as this module is opened
+// which probably is at startup. It is usually not a good idea to have 'values' that do IO like this on startup. This could for example
+// throw an exception when someone has just opened the module.
+
+// one option is to make it a function by adding a unit argument:
+// let getOperatingSystem() =
+//     if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then OSPlatform.Windows
+//     else OSPlatform.Linux
+
+// If you do not want to evaluate it everytime the functions is called I would wrap it in a lazy value instead:
+// let getOperatingSystem =
+//     lazy
+//         if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then OSPlatform.Windows
+//         else OSPlatform.Linux
+
+let getOperatingSystem =
+    if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then OSPlatform.Windows
+    else OSPlatform.Linux
+
+let getOSPlatformCmd (command: string[]) =
+    match getOperatingSystem with
+    | _ when getOperatingSystem = OSPlatform.Windows -> "cmd"
+    | _ -> command.[0]
+
+let getOSPlatformArgs command =
+    match getOperatingSystem with
+    | _ when getOperatingSystem = OSPlatform.Windows -> Array.append [| "/c" |] command
+    | _ -> command.[1..]
+    
+
+// The usage of pattern matching is a bit weird when you do wild-card matches and use the when clause, to me it looks like
+// we are checking the same thing twice, i.e. getOperatingSystem checks if the operating system is Windows, and then we do 
+// `getOperatingSystem = OSPlatform.Windows`
+
+// I would prefer to solve this by adding a custom type so we can do proper pattern matching:
+module OsPlatformUtils2 =
+
+    type Platform =
+        | Windows
+        | Linux
+
+    let getOperatingSystem =
+        lazy
+            printfn "This is only executed once"
+            if RuntimeInformation.IsOSPlatform(OSPlatform.Windows) then Windows
+            else Linux
+
+    let getOSPlatformCmd (command: string[]) =
+        match getOperatingSystem.Value with
+        | Windows -> "cmd"
+        | Linux -> command.[0]
+
+    let getOSPlatformArgs command =
+        match getOperatingSystem.Value with
+        | Windows -> Array.append [| "/c" |] command
+        | Linux -> command.[1..]
+
