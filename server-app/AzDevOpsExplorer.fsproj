@@ -2,17 +2,17 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common/Json.fs" />
-    <Compile Include="Common/OSPlatformUtils.fs" />
-    <Compile Include="Common/ProcessUtils.fs" />
     <Compile Include="Domain/Project.fs" />
     <Compile Include="Domain/Release.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.1" />
+    <PackageReference Include="CliWrap" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Suave" Version="2.5.6" />
   </ItemGroup>

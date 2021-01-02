@@ -2,8 +2,8 @@ namespace Domain
 
 open System
 open Common.Json
-open Common.OSPlatformUtils
-open Common.ProcessUtils
+open CliWrap
+open CliWrap.Buffered
 
 module Release =
     type Release = {
@@ -12,9 +12,13 @@ module Release =
     }
 
     let GetReleaseList organization project =
-        let command = [| "az"; "pipelines"; "release"; "list"; "--org"; organization; "-p"; project |]
-        let output = execSync (getOSPlatformCmd command) (getOSPlatformArgs command) None
-        match output with
-            | Ok (_, value) ->
-                Some (getStdOutAsString value |> deserialize<Release[]>)
+        let command = "az"
+        let arguments = $"pipelines release list --org {organization} -p {project}"
+        let output =
+            Cli.Wrap(command).WithArguments(arguments).ExecuteBufferedAsync().Task
+            |> Async.AwaitTask
+            |> Async.RunSynchronously            
+        match output.ExitCode with
+            | 0 ->
+                Some (output.StandardOutput |> deserialize<Release[]>)
             | _ -> None

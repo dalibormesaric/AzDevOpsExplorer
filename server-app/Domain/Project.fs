@@ -1,8 +1,8 @@
 namespace Domain
 
 open Common.Json
-open Common.OSPlatformUtils
-open Common.ProcessUtils
+open CliWrap
+open CliWrap.Buffered
 
 module Project =
     type Project = {
@@ -14,9 +14,13 @@ module Project =
     }
         
     let GetProjectList organization =
-        let command = [| "az"; "devops"; "project"; "list"; "--org"; organization |]
-        let output = execSync (getOSPlatformCmd command) (getOSPlatformArgs command) None
-        match output with
-            | Ok (_, value) ->
-                Some (getStdOutAsString value |> deserialize).Value
+        let command = "az"
+        let arguments = $"devops project list --org {organization}"
+        let output = 
+            Cli.Wrap(command).WithArguments(arguments).ExecuteBufferedAsync().Task
+            |> Async.AwaitTask
+            |> Async.RunSynchronously  
+        match output.ExitCode with
+            | 0 ->
+                Some (output.StandardOutput |> deserialize).Value
             | _ -> None
