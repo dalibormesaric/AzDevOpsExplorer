@@ -4,7 +4,7 @@ This is an application built to try out the following tech stack :
 
 * [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 * [Azure DevOps CLI](https://docs.microsoft.com/en-us/azure/devops/cli/?view=azure-devops)
-* [F#](https://fsharp.org/) / [Argu](http://fsprojects.github.io/Argu/) / [Suave](https://suave.io/)
+* [F#](https://fsharp.org/) / [Argu](http://fsprojects.github.io/Argu/) / [Suave](https://suave.io/) / [CliWrap](https://github.com/Tyrrrz/CliWrap)
 * [Create react app](https://create-react-app.dev/)
 * [Tailwind CSS](https://tailwindcss.com/)
 
