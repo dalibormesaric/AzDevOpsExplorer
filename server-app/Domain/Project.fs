@@ -3,6 +3,7 @@ namespace Domain
 open Common.Json
 open CliWrap
 open CliWrap.Buffered
+open AzHelper
 
 module Project =
     type Project = {
@@ -14,12 +15,11 @@ module Project =
     }
         
     let GetProjectList organization =
-        let command = "az"
         let arguments = $"devops project list --org {organization}"
         let output = 
-            Cli.Wrap(command).WithArguments(arguments).ExecuteBufferedAsync().Task
+            Cli.Wrap(azCommand).WithArguments(arguments).ExecuteBufferedAsync().Task
             |> Async.AwaitTask
-            |> Async.RunSynchronously  
+            |> Async.RunSynchronously
         match output.ExitCode with
             | 0 ->
                 Some (output.StandardOutput |> deserialize).Value

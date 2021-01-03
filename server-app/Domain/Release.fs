@@ -4,6 +4,7 @@ open System
 open Common.Json
 open CliWrap
 open CliWrap.Buffered
+open AzHelper
 
 module Release =
     type Release = {
@@ -12,12 +13,11 @@ module Release =
     }
 
     let GetReleaseList organization project =
-        let command = "az"
         let arguments = $"pipelines release list --org {organization} -p {project}"
         let output =
-            Cli.Wrap(command).WithArguments(arguments).ExecuteBufferedAsync().Task
+            Cli.Wrap(azCommand).WithArguments(arguments).ExecuteBufferedAsync().Task
             |> Async.AwaitTask
-            |> Async.RunSynchronously            
+            |> Async.RunSynchronously
         match output.ExitCode with
             | 0 ->
                 Some (output.StandardOutput |> deserialize<Release[]>)
