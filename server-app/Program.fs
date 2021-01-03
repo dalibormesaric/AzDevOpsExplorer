@@ -20,15 +20,15 @@ let releasesRoute organization project =
     | None -> BAD_REQUEST ""
 
 let app organization =
-  choose
-    [ 
-        GET >=> choose
-            [ path "/projects" >=> projectsRoute organization
-              pathScan "/releases/%s" (fun (project) -> releasesRoute organization project)
-            ]
-            // https://github.com/msarilar/EDEngineer/blob/d7fe6b9cf593a3e2f63434c1dede3df5b6b1e09f/EDEngineer.Server/Server.fs
-            >=> cors defaultCORSConfig
-    ]
+    choose
+        [            
+            GET >=> choose
+                [ path "/projects" >=> request (fun _ -> projectsRoute organization)
+                  pathScan "/releases/%s" (fun (project) -> releasesRoute organization project)
+                ]
+                // https://github.com/msarilar/EDEngineer/blob/d7fe6b9cf593a3e2f63434c1dede3df5b6b1e09f/EDEngineer.Server/Server.fs
+                >=> cors defaultCORSConfig
+        ]
 
 type CliArguments =
     | [<AltCommandLine("-o")>] Organization of name:string
