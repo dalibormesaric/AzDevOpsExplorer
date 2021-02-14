@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
-type Release = {
-    CreatedOn: Date
-    Name: string
+type Build = {
+    FinishTime: Date
+    BuildNumber: string
     Id: number
 }
 
-export const ReleaseList = () => {
+export const BuildList = () => {
     let { project } = useParams<{ project: string }>()
-    const [releaseList, setReleaseList] = useState<Release[]>()
+    const [buildList, setBuildList] = useState<Build[]>()
     const [isLoading, setIsLoading] = useState(true)
 
     const getData = async () => {
-        let response = await fetch(`http://localhost:8080/releases/${project}`)
-        setReleaseList(await response.json())
+        let response = await fetch(`http://localhost:8080/builds/${project}`)
+        setBuildList(await response.json())
         setIsLoading(false)
     }
 
@@ -26,20 +26,20 @@ export const ReleaseList = () => {
 
     return (    
         <div>
-            <h1><Link to="/">Projects</Link> / Releases</h1>
+            <h1><Link to="/">Projects</Link> / Builds</h1>
             <div className="py-8">
-                {!isLoading && releaseList &&
+                {!isLoading && buildList &&
                     <table className="min-w-full">
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {releaseList && releaseList.map(f => (
-                                <tr key={f.Name}>
-                                    <td><Link to={`/releases/${project}/${f.Id}`}>{f.Name}</Link></td>
-                                    <td>{new Date(f.CreatedOn).toDateString()}</td>
+                            {buildList && buildList.map(f => (
+                                <tr key={f.BuildNumber}>
+                                    <td><Link to={`/builds/${project}/${f.Id}`}>{f.BuildNumber}</Link></td>
+                                    <td>{new Date(f.FinishTime).toDateString()}</td>
                                 </tr>
                             ))}
                         </tbody>
                 </table>}
-                {!isLoading && (!releaseList || (releaseList && releaseList.length === 0)) &&
+                {!isLoading && (!buildList || (buildList && buildList.length === 0)) &&
                     <span>No data</span>}
                 {isLoading && 
                 <span>Loading...</span>}

@@ -9,6 +9,7 @@
     <Compile Include="Common/AzHelper.fs" />
     <Compile Include="Domain/Project.fs" />
     <Compile Include="Domain/Release.fs" />
+    <Compile Include="Domain/Build.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

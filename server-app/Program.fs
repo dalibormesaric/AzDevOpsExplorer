@@ -19,12 +19,24 @@ let releasesRoute organization project =
     | Some s -> OK (serialize s)
     | None -> BAD_REQUEST ""
 
+let releaseRoute organization project id =
+    match Release.GetRelease organization project id with
+    | Some s -> OK (serialize s)
+    | None -> BAD_REQUEST ""
+
+let buildRoute organization project =
+    match Build.GetBuildList organization project with
+    | Some s -> OK (serialize s)
+    | None -> BAD_REQUEST ""
+
 let app organization =
     choose
         [            
             GET >=> choose
                 [ path "/projects" >=> request (fun _ -> projectsRoute organization)
+                  pathScan "/releases/%s/%d" (fun (project, id) -> releaseRoute organization project id)
                   pathScan "/releases/%s" (fun (project) -> releasesRoute organization project)
+                  pathScan "/builds/%s" (fun (project) -> buildRoute organization project)
                 ]
                 // https://github.com/msarilar/EDEngineer/blob/d7fe6b9cf593a3e2f63434c1dede3df5b6b1e09f/EDEngineer.Server/Server.fs
                 >=> cors defaultCORSConfig

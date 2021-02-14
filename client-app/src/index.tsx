@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { ProjectsList } from './features/projects/ProjectList';
 import { ReleaseList } from './features/releases/ReleaseList';
+import { Release } from './features/releases/Release';
+import { BuildList } from './features/builds/BuildList';
 import reportWebVitals from './reportWebVitals';
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 
@@ -16,6 +18,12 @@ ReactDOM.render(
           </Route>
           <Route exact path="/releases/:project">
             <ReleaseList />
+          </Route>
+          <Route exact path="/releases/:project/:id">
+            <Release />
+          </Route>
+          <Route exact path="/builds/:project">
+            <BuildList />
           </Route>
         </Switch>
       </Router>
